@@ -13,7 +13,7 @@ gui
        sMafiaNum <- spinCtrl leftLayout 1 99 []
        sMaxPlayers <- spinCtrl leftLayout 1 99 []
        sMafiaKP <- spinCtrl leftLayout 0 99 []
-       cDayNight <- comboBox leftLayout [items := ["Day","Night"]]
+       cDayNight <- choice leftLayout [items := ["Day","Night"]]
 
        sCycle <- spinCtrl leftLayout 0 99 []
 
