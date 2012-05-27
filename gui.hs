@@ -13,14 +13,15 @@ gui :: IO ()
 gui
   = do f <- frame [text := "Mafia Toolkit"]
        leftLayout <- panel f []
-       sMafiaNum <- spinCtrl leftLayout 1 99 []
-       sMaxPlayers <- spinCtrl leftLayout 1 99 []
-       sMafiaKP <- spinCtrl leftLayout 0 99 []
+       sMafiaNum <- spinCtrl leftLayout 1 99 [selection := 2]
+       sMaxPlayers <- spinCtrl leftLayout 1 99 [selection := 7]
+       sMafiaKP <- spinCtrl leftLayout 0 99 [selection := 1
+                      ,tooltip := "Mafia KP-- 0 means ceil(maf#/2)"]
 
        defaultSize <- get sMafiaKP size 
        
-       cDayNight <- choice leftLayout [items := ["Day","Night"] ]
-       sCycle <- spinCtrl leftLayout 0 99 []
+       cDayNight <- choice leftLayout [items := ["Day","Night"], selection := 0]
+       sCycle <- spinCtrl leftLayout 0 99 [selection := 1]
 
        set f [layout := container leftLayout $
                         margin 10 $
