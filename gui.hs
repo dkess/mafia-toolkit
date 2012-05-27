@@ -12,18 +12,18 @@ spinnerW = 40
 gui :: IO ()
 gui
   = do f <- frame [text := "Mafia Toolkit"]
-       leftLayout <- panel f []
-       sMafiaNum <- spinCtrl leftLayout 1 99 [selection := 2]
-       sMaxPlayers <- spinCtrl leftLayout 1 99 [selection := 7]
-       sMafiaKP <- spinCtrl leftLayout 0 99 [selection := 1
+       p <- panel f []
+       sMafiaNum <- spinCtrl p 1 99 [selection := 2]
+       sMaxPlayers <- spinCtrl p 1 99 [selection := 7]
+       sMafiaKP <- spinCtrl p 0 99 [selection := 1
                       ,tooltip := "Mafia KP-- 0 means ceil(maf#/2)"]
 
-       defaultSize <- get sMafiaKP size 
+       defaultSize <- get sMafiaKP size
        
-       cDayNight <- choice leftLayout [items := ["Day","Night"], selection := 0]
-       sCycle <- spinCtrl leftLayout 0 99 [selection := 1]
+       cDayNight <- choice p [items := ["Day","Night"], selection := 0]
+       sCycle <- spinCtrl p 0 99 [selection := 1]
 
-       set f [layout := container leftLayout $
+       set f [layout := container p $
                         margin 10 $
                         column 5 [boxed "Game Setup"
                         (grid 5 5 [[label "Mafia #",minsize (defaultSize {sizeW = spinnerW}) (widget sMafiaNum)]
