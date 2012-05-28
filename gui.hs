@@ -1,6 +1,7 @@
 module Main where
 
 import Graphics.UI.WX
+import MafiaRole
 
 main :: IO ()
 main
@@ -43,6 +44,6 @@ gui
                                   ,[widget cDayNight,minsize (defaultSize {sizeW = spinnerW}) (widget sCycle)]])
                         ,floatTopRight $ row 5 [tabs nb
                           [tab "Role Setup" $ container p1 $ margin 10 $ column 5 [grid 5 5
-                            [[label "Vanilla",]]]
+                            [[label "Vanilla"]]]
                           ,tab "Simulation" $ container p2 $ margin 10 $ column 5 [label "page 2"]]]]]
        return ()
