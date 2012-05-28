@@ -1,3 +1,5 @@
+module MafiaRole( Role (..)) where
+
 import Data.List
 
 splitEvery :: Int -> [a] -> [[a]]
