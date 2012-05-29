@@ -1,4 +1,4 @@
-module MafiaRole( Role (..)) where
+module MafiaRole( Role (..),roleList) where
 
 import Data.List
 
@@ -142,6 +142,9 @@ maybeAct flags f r = if (willAct flags) then
     f r
 else
     [r]
+
+roleList :: [Role]
+roleList = [vanilla,cVigilante,doctor,roleCop,aCop,detective,goon,roleblocker]
 
 -- for testing purposes
 testRoles :: [Role]
