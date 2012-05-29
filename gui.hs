@@ -38,10 +38,10 @@ gui
                                            cbox <- checkBox p1 [text := (name a)]
                                            return cbox)
        minSpinners <- forM roleList(\a -> do
-                                           spinner <- spinCtrl p 0 99 [selection := 0]
+                                           spinner <- spinCtrl p1 0 99 [selection := 0]
                                            return spinner)
        maxSpinners <- forM roleList(\a -> do
-                                           spinner <- spinCtrl p 0 99 [selection := 1]
+                                           spinner <- spinCtrl p1 0 99 [selection := 1]
                                            return spinner)
 
        let roleSettings = transpose [[widget cbox | cbox <- checkBoxes]
@@ -59,7 +59,7 @@ gui
                                   ,[label "Max Players",minsize (defaultSize {sizeW = spinnerW}) (widget sMaxPlayers)]
                                   ,[label "Mafia KP",minsize (defaultSize {sizeW = spinnerW}) (widget sMafiaKP)]
                                   ,[widget cDayNight,minsize (defaultSize {sizeW = spinnerW}) (widget sCycle)]])
-                        ,floatTopRight $ row 5 [tabs nb
+                        ,row 5 [tabs nb
                           [tab "Role Setup" $ container p1 $ margin 10 $ row 5 [grid 5 5
                             roleSettings]
                           ,tab "Simulation" $ container p2 $ margin 10 $ column 5 [label "page 2"]]]]]
