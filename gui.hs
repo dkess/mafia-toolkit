@@ -43,11 +43,16 @@ gui
        maxSpinners <- forM roleList(\a -> do
                                            spinner <- spinCtrl p1 0 99 [selection := 1]
                                            return spinner)
+       fillBoxes <- forM roleList(\a -> do
+                                       cbox <- checkBox p1 [text := "Fill"]
+                                       set cbox [checked := ((name a) == "Vanilla")]
+                                       return cbox)
 
        let roleSettings = transpose [[widget cbox | cbox <- checkBoxes]
                                     ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- minSpinners]
                                     ,[label "-" | a <- roleList]
                                     ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- maxSpinners]
+                                    ,[widget cbox | cbox <- fillBoxes]
                                     ]
        -- Simulation page
        p2 <- panel nb []
