@@ -38,14 +38,14 @@ gui
                                            cbox <- checkBox p1 [text := (name a)]
                                            return cbox)
        minSpinners <- forM roleList(\a -> do
-                                           spinner <- spinCtrl p1 0 99 [selection := 0]
+                                           spinner <- spinCtrl p1 0 99 [selection := minAmount a]
                                            return spinner)
        maxSpinners <- forM roleList(\a -> do
-                                           spinner <- spinCtrl p1 0 99 [selection := 1]
+                                           spinner <- spinCtrl p1 0 99 [selection := maxAmount a]
                                            return spinner)
        fillBoxes <- forM roleList(\a -> do
                                        cbox <- checkBox p1 [text := "Fill"]
-                                       set cbox [checked := ((name a) == "Vanilla")]
+                                       set cbox [checked := fillRole a]
                                        return cbox)
 
        let roleSettings = transpose [[widget cbox | cbox <- checkBoxes]

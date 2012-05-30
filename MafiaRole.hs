@@ -48,7 +48,10 @@ data Role = Role {
     color   :: Color,
     action  :: [Role] -> [[Role]],
     startDay:: [Role -> Role],  -- actions done at the beginning
-    rflags  :: RoleFlags
+    rflags  :: RoleFlags,
+    maxAmount::Int,
+    minAmount::Int,
+    fillRole:: Bool
 }
 
 instance Show Role where
@@ -61,7 +64,10 @@ defaultRole = Role {
     color = None,
     action = noAction,
     startDay = [],
-    rflags = defaultFlags
+    rflags = defaultFlags,
+    maxAmount = 2,
+    minAmount = 0,
+    fillRole = False
 } where noAction x = [[]]
 
 cVigilante :: Role
@@ -71,13 +77,17 @@ cVigilante = defaultRole {
     action = modHP (-1),
     rflags = defaultFlags {
         willAct = True
-    }
+    },
+    maxAmount = 1
 }
 
 vanilla :: Role
 vanilla = defaultRole {
     name = "Vanilla",
-    color = Green
+    color = Green,
+    maxAmount = 4,
+    minAmount = 3,
+    fillRole = True
 }
 
 doctor :: Role
@@ -110,13 +120,15 @@ detective = defaultRole {
 goon :: Role
 goon = defaultRole {
     name = "Goon",
-    color = Red
+    color = Red,
+    fillRole = True
 }
 
 roleblocker :: Role
 roleblocker = defaultRole {
     name = "Roleblocker",
-    color = Red
+    color = Red,
+    maxAmount = 1
 }
 
 -- Change health (s in sMod stands for single,
@@ -142,6 +154,14 @@ maybeAct flags f r = if (willAct flags) then
     f r
 else
     [r]
+
+{-
+constructSingleRoleList :: [(Role,Int,Int)] -> [Role]
+constructSingleRoleList [] = []
+constructSingleRoleList ((r,min,max):xs)
+    | min - max > 0 = constructSingleRoleList xs
+    | max >= min = r:(constructSingleRoleList (r,min,max-1))
+-}
 
 roleList :: [Role]
 roleList = [vanilla,cVigilante,doctor,roleCop,aCop,detective,goon,roleblocker]
