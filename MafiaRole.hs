@@ -163,7 +163,7 @@ minMaxList i = map quantityList $ concatMap  permutations $ transpose $ [take (w
 expandMinMax :: (a,Int,Int) -> [(a,Int)]
 expandMinMax (a,min,max) = zip (repeat a) [min..max]
 
-testList :: [(Int,Int,Int)]
+testList :: [(Integer,Int,Int)]
 testList = [(1,3,4),(2,1,3),(3,3,5)]
 
 -- yfeldblum on StackOverflow for this one

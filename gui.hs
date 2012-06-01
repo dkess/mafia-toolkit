@@ -31,7 +31,7 @@ gui
        -- The notebook containing more tools
        nb <- notebook p []
 
-       -- Role Setup page
+       -- Role Setup page 
        p1 <- panel nb []
 
        checkBoxes <- forM roleList (\a -> do
@@ -55,6 +55,24 @@ gui
                                     ,[widget cbox | cbox <- fillBoxes]
                                     ]
 
+       refButton <- button p1 [text := "Print Output", on command :=
+          do
+              minVal <- getSpinValues minSpinners
+              maxVal <- getSpinValues maxSpinners
+              print $ minMaxList $ zip3 (map name roleList) minVal maxVal
+              return ()]
+       {-
+       where showOut= do
+       minVals <- forM minSpinners(\a -> do
+           out <- get a selection
+           return out)
+       maxVals <- forM maxSpinners(\a -> do
+           out <- get a selection
+           return out)
+       print $ minMaxList $ zip3 (map name roleList) minVals maxVals
+       return ()
+       -}
+       
        -- Simulation page
        p2 <- panel nb []
 
@@ -70,3 +88,10 @@ gui
                             roleSettings]
                           ,tab "Simulation" $ container p2 $ margin 10 $ column 5 [label "page 2"]]]]]
        return ()
+
+getSpinValues i
+  = do maxvals <- forM i (\a -> do
+           t <- get a selection
+           return t)
+       return maxvals
+
