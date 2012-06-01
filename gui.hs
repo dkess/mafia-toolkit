@@ -54,6 +54,7 @@ gui
                                     ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- maxSpinners]
                                     ,[widget cbox | cbox <- fillBoxes]
                                     ]
+
        -- Simulation page
        p2 <- panel nb []
 

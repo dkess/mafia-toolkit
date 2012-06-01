@@ -1,4 +1,4 @@
-module MafiaRole( Role (..),roleList) where
+module MafiaRole( Role (..),roleList, minMaxList) where
 
 import Data.List
 
@@ -11,6 +11,7 @@ select xs = zip (inits xs) (tails xs)
 
 -- I might change this to faction names instead of colors
 data Color = Red | Blue | Green | Black | None
+
 instance Show Color where
     show Red = "Red"        -- primary scumteam
     show Blue = "Blue"      -- secondary scumteam (NOT town)
@@ -155,13 +156,25 @@ maybeAct flags f r = if (willAct flags) then
 else
     [r]
 
-{-
-constructSingleRoleList :: [(Role,Int,Int)] -> [Role]
-constructSingleRoleList [] = []
-constructSingleRoleList ((r,min,max):xs)
-    | min - max > 0 = constructSingleRoleList xs
-    | max >= min = r:(constructSingleRoleList (r,min,max-1))
--}
+-- Functions to generate lists based off the min/max values specified in the GUI
+minMaxList :: [(a,Int,Int)] -> [[a]]
+minMaxList i = map quantityList $ concatMap  permutations $ transpose $ [take (wideLCM (map length (map expandMinMax i))) (cycle a) | a <- map expandMinMax i]
+
+expandMinMax :: (a,Int,Int) -> [(a,Int)]
+expandMinMax (a,min,max) = zip (repeat a) [min..max]
+
+testList :: [(Int,Int,Int)]
+testList = [(1,3,4),(2,1,3),(3,3,5)]
+
+-- yfeldblum on StackOverflow for this one
+wideLCM :: [Int] -> Int
+wideLCM = foldl lcm 1
+
+quantityList :: [(a,Int)] -> [a]
+quantityList [] = []
+quantityList ((a,num):xs)
+  | num <= 0 = quantityList xs
+  | otherwise= (replicate num a) ++ (quantityList xs)
 
 roleList :: [Role]
 roleList = [vanilla,cVigilante,doctor,roleCop,aCop,detective,goon,roleblocker]
