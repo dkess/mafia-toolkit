@@ -140,13 +140,13 @@ sModHP num role = role {health = (health role) + num}
 -- modHP takes a value and applies it to everyone in a
 -- different possibility. A value of 1 heals, -1 is KP
 modHP :: Int -> [Role] -> [[Role]]
-modHP i r = actionDist (sModHP i) r
+modHP i r = listDist (sModHP i) r
 
--- actionDist takes an action that modifies a role,
+-- listDist takes an action that modifies a role,
 -- and gives the possibilities of it being acted on everyone
 -- shoutout to dmwit in #haskell for figuring this out
-actionDist :: (Role -> Role) -> [Role] -> [[Role]]
-actionDist f r = [b ++ f m:e | (b,m:e) <- select r]
+listDist :: (a -> a) -> [a] -> [[a]]
+listDist f r = [b ++ f m:e | (b,m:e) <- select r]
 
 -- If willAct in the flags is set to False, do not give an action.
 -- Otherwise perform the action
