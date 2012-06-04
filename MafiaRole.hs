@@ -53,6 +53,7 @@ data Role = Role {
     rflags  :: RoleFlags,
     maxAmount::Int,
     minAmount::Int,
+    defRole :: Bool, -- Decides if the role should be enabled by default
     fillRole:: Bool
 }
 
@@ -69,6 +70,7 @@ defaultRole = Role {
     rflags = defaultFlags,
     maxAmount = 2,
     minAmount = 0,
+    defRole = False,
     fillRole = False
 } where noAction x = [[]]
 
@@ -89,6 +91,7 @@ vanilla = defaultRole {
     color = Green,
     maxAmount = 4,
     minAmount = 3,
+    defRole = True,
     fillRole = True
 }
 
@@ -96,7 +99,8 @@ doctor :: Role
 doctor = defaultRole {
     name = "Doctor",
     color = Green,
-    action = modHP(1)
+    action = modHP(1),
+    defRole = True
 }
 
 roleCop :: Role     -- role, not alignment
@@ -109,7 +113,8 @@ roleCop = defaultRole {
 aCop :: Role    -- Alignment cop
 aCop = defaultRole {
     name = " Cop",
-    color = Green
+    color = Green,
+    defRole = True
     -- action should take sanity as parameter
 }
 
@@ -123,6 +128,7 @@ goon :: Role
 goon = defaultRole {
     name = "Goon",
     color = Red,
+    defRole = True,
     fillRole = True
 }
 

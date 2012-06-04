@@ -13,6 +13,13 @@ main
 spinnerW :: Int
 spinnerW = 40
 
+-- We use this to ensure that the roles marked
+-- for "fill" are calculate seperately
+listFromBools :: [a] -> [Bool] -> [a]
+listFromBools x y = [fst a | a <- zip x y, snd a == True]
+
+
+
 gui :: IO ()
 gui
   = do f <- frame [text := "Mafia Toolkit"]
@@ -36,7 +43,7 @@ gui
        p1 <- panel nb []
 
        checkBoxes <- forM roleList (\a -> do
-                                           cbox <- checkBox p1 [text := (name a)]
+                                           cbox <- checkBox p1 [text := (name a), checked := (defRole a)]
                                            return cbox)
        minSpinners <- forM roleList(\a -> do
                                            spinner <- spinCtrl p1 0 99 [selection := minAmount a]
@@ -49,6 +56,20 @@ gui
                                        set cbox [checked := fillRole a]
                                        return cbox)
 
+       refButton <- button p [text := "Print Output", on command :=
+          do
+              fillVals <- getCheckValues fillBoxes
+              enabledVals <- getCheckValues checkBoxes
+
+              -- Make sure there isn't more than 1 fill per alignment
+              -- to be implemented
+              let usedRoles = zipWith (&&) (map not fillVals) enabledVals
+              minVal <- getSpinValues $ listFromBools minSpinners usedRoles
+              maxVal <- getSpinValues $ listFromBools maxSpinners usedRoles
+              --print $ nub $ minMaxList $ zip3 (map name roleList) minVal maxVal
+              print usedRoles
+              return ()]
+
        let roleSettings = transpose [[widget cbox | cbox <- checkBoxes]
                                     ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- minSpinners]
                                     ,[label "-" | a <- roleList]
@@ -56,26 +77,6 @@ gui
                                     ,[widget cbox | cbox <- fillBoxes]
                                     ]
 
-       refButton <- button p1 [text := "Print Output", on command :=
-          do
-              checkVals <- getCheckValues fillBoxes
-              minVal <- getSpinValues minSpinners
-              maxVal <- getSpinValues maxSpinners
-              --print $ nub $ minMaxList $ zip3 (map name roleList) minVal maxVal
-              print checkVals
-              return ()]
-       {-
-       where showOut= do
-       minVals <- forM minSpinners(\a -> do
-           out <- get a selection
-           return out)
-       maxVals <- forM maxSpinners(\a -> do
-           out <- get a selection
-           return out)
-       print $ minMaxList $ zip3 (map name roleList) minVals maxVals
-       return ()
-       -}
-       
        -- Simulation page
        p2 <- panel nb []
 
