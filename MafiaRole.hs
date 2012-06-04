@@ -1,6 +1,7 @@
 module MafiaRole( Role (..),roleList, minMaxList) where
 
 import Data.List
+import Control.Applicative
 
 splitEvery :: Int -> [a] -> [[a]]
 splitEvery n = takeWhile (not.null) . map (take n) . iterate (drop n)
@@ -165,9 +166,9 @@ minMaxList i = filter notnull $ map quantityList $ concatMap  permutations $ tra
 minMaxList :: [(a,Int,Int)] -> [[a]]
 minMaxList i = 
   map quantityList $
-  transpose $
-  map concat $
-  map permutations $
+  sequence $
+  --map concat $
+  --map permutations $
   [take (wideLCM (map length ei)) (cycle a) | a <- ei]
      where ei = [expandMinMax (a,b,c) | (a,b,c) <- i, c /= 0]
 

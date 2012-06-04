@@ -58,9 +58,11 @@ gui
 
        refButton <- button p1 [text := "Print Output", on command :=
           do
+              checkVals <- getCheckValues fillBoxes
               minVal <- getSpinValues minSpinners
               maxVal <- getSpinValues maxSpinners
-              print $ nub $ minMaxList $ zip3 (map name roleList) minVal maxVal
+              --print $ nub $ minMaxList $ zip3 (map name roleList) minVal maxVal
+              print checkVals
               return ()]
        {-
        where showOut= do
@@ -95,4 +97,10 @@ getSpinValues i
            t <- get a selection
            return t)
        return maxvals
+
+getCheckValues i
+  = do checkedNums <- forM (zip i [1..]) (\a -> do
+        t <- get (fst a) checked
+        return t)
+       return checkedNums
 
