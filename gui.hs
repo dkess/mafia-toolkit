@@ -2,6 +2,7 @@ module Main where
 
 import Graphics.UI.WX
 import Control.Monad
+import Data.List
 import MafiaRole
 import Data.List (transpose)
 
@@ -59,7 +60,7 @@ gui
           do
               minVal <- getSpinValues minSpinners
               maxVal <- getSpinValues maxSpinners
-              print $ minMaxList $ zip3 (map name roleList) minVal maxVal
+              print $ nub $ minMaxList $ zip3 (map name roleList) minVal maxVal
               return ()]
        {-
        where showOut= do

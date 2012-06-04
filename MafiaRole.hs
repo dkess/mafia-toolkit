@@ -156,12 +156,27 @@ maybeAct flags f r = if (willAct flags) then
 else
     [r]
 
+{-
 -- Functions to generate lists based off the min/max values specified in the GUI
 minMaxList :: [(a,Int,Int)] -> [[a]]
-minMaxList i = map quantityList $ concatMap  permutations $ transpose $ [take (wideLCM (map length (map expandMinMax i))) (cycle a) | a <- map expandMinMax i]
+minMaxList i = filter notnull $ map quantityList $ concatMap  permutations $ transpose $ [take (wideLCM [t | t <- map length (map expandMinMax i), t /= 0]) (cycle a) | a <- map expandMinMax i]
+-}
+
+minMaxList :: [(a,Int,Int)] -> [[a]]
+minMaxList i = 
+  map quantityList $
+  transpose $
+  map concat $
+  map permutations $
+  [take (wideLCM (map length ei)) (cycle a) | a <- ei]
+     where ei = [expandMinMax (a,b,c) | (a,b,c) <- i, c /= 0]
+
+-- there's probably a better way to do this, however I am stupid and don't know
+notnull :: [a] -> Bool
+notnull x = not (null x)
 
 expandMinMax :: (a,Int,Int) -> [(a,Int)]
-expandMinMax (a,min,max) = zip (repeat a) [min..max]
+expandMinMax (a,min,max) =  zip (repeat a) [min..max]
 
 testList :: [(Integer,Int,Int)]
 testList = [(1,3,4),(2,1,3),(3,3,5)]
