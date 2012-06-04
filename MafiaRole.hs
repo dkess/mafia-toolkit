@@ -171,10 +171,6 @@ minMaxList i =
   [take (wideLCM (map length ei)) (cycle a) | a <- ei]
      where ei = [expandMinMax (a,b,c) | (a,b,c) <- i, c /= 0]
 
--- there's probably a better way to do this, however I am stupid and don't know
-notnull :: [a] -> Bool
-notnull x = not (null x)
-
 expandMinMax :: (a,Int,Int) -> [(a,Int)]
 expandMinMax (a,min,max) =  zip (repeat a) [min..max]
 
