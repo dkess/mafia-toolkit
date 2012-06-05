@@ -3,6 +3,7 @@ module Main where
 import Graphics.UI.WX
 import Control.Monad
 import Data.List
+import Data.Maybe
 import MafiaRole
 import Data.List (transpose)
 
@@ -61,13 +62,19 @@ gui
               fillVals <- getCheckValues fillBoxes
               enabledVals <- getCheckValues checkBoxes
 
-              -- Make sure there isn't more than 1 fill per alignment
-              -- to be implemented
               let usedRoles = zipWith (&&) (map not fillVals) enabledVals
+
               minVal <- getSpinValues $ listFromBools minSpinners usedRoles
               maxVal <- getSpinValues $ listFromBools maxSpinners usedRoles
-              --print $ nub $ minMaxList $ zip3 (map name roleList) minVal maxVal
-              print usedRoles
+              mafiaNum <- get sMafiaNum selection
+              maxPlayers <- get sMaxPlayers selection
+
+              print $ [i ++ maybe [] (\y -> replicate (maxPlayers - mafiaNum - length i) (fst y))
+                         (listToMaybe [x | x <- zip roleList minVal, (MafiaRole.color (fst x)) == Green])
+                      | i <- minMaxList $ zip3 roleList minVal maxVal]
+
+
+              --print usedRoles
               return ()]
 
        let roleSettings = transpose [[widget cbox | cbox <- checkBoxes]

@@ -1,4 +1,4 @@
-module MafiaRole( Role (..),roleList, minMaxList) where
+module MafiaRole( Role (..),roleList, minMaxList, Color (..)) where
 
 import Data.List
 import Control.Applicative
@@ -11,14 +11,7 @@ select :: [a] -> [([a], [a])]
 select xs = zip (inits xs) (tails xs)
 
 -- I might change this to faction names instead of colors
-data Color = Red | Blue | Green | Black | None
-
-instance Show Color where
-    show Red = "Red"        -- primary scumteam
-    show Blue = "Blue"      -- secondary scumteam (NOT town)
-    show Green = "Green"    -- town
-    -- coming soon, sleeper cell and other factions
-    show None = "None"      -- should not be used
+data Color = Red | Blue | Green | Black | None deriving (Show, Eq)
 
 data RoleFlags = RoleFlags {    -- RoleFlags are more dynamic than normal attributes
     bullets  :: Int,    -- bullets, for a vigilante 
