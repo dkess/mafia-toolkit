@@ -19,8 +19,6 @@ spinnerW = 40
 listFromBools :: [a] -> [Bool] -> [a]
 listFromBools x y = [fst a | a <- zip x y, snd a == True]
 
-
-
 gui :: IO ()
 gui
   = do f <- frame [text := "Mafia Toolkit"]
@@ -52,27 +50,36 @@ gui
        maxSpinners <- forM roleList(\a -> do
                                            spinner <- spinCtrl p1 0 99 [selection := maxAmount a]
                                            return spinner)
+       {-
        fillBoxes <- forM roleList(\a -> do
                                        cbox <- checkBox p1 [text := "Fill"]
                                        set cbox [checked := fillRole a]
                                        return cbox)
-
+       -}
        refButton <- button p [text := "Print Output", on command :=
           do
-              fillVals <- getCheckValues fillBoxes
+              --fillVals <- getCheckValues fillBoxes
               enabledVals <- getCheckValues checkBoxes
 
-              let usedRoles = zipWith (&&) (map not fillVals) enabledVals
+              --let usedRoles = zipWith (&&) (map not fillVals) enabledVals
 
-              minVal <- getSpinValues $ listFromBools minSpinners usedRoles
-              maxVal <- getSpinValues $ listFromBools maxSpinners usedRoles
+              minVal <- getSpinValues $ listFromBools minSpinners enabledVals
+              maxVal <- getSpinValues $ listFromBools maxSpinners enabledVals
               mafiaNum <- get sMafiaNum selection
               maxPlayers <- get sMaxPlayers selection
 
-              print $ [i ++ maybe [] (\y -> replicate (maxPlayers - mafiaNum - length i) (fst y))
+              {-
+              print $ [i ++ (maybe [] (\y -> replicate (maxPlayers - mafiaNum - length i) (fst y))
                          (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
-                                         , (MafiaRole.color (fst x)) == Green])
-                      | i <- minMaxList $ zip3 roleList minVal maxVal]
+                                         , (MafiaRole.color (fst x)) == Green]))
+                         ++ (maybe [] (\y -> replicate (mafiaNum - length [x | x <- i, MafiaRole.color x == Red]) (fst y))
+                         (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
+                                         , (MafiaRole.color (fst x)) == Red]))
+                         | i <- minMaxList $ listFromBools (zip3 roleList minVal maxVal) enabledVals]
+              -}
+              print $ minMaxList $ listFromBools (zip3 roleList minVal maxVal) enabledVals
+              print $ listFromBools (zip3 roleList minVal maxVal) enabledVals
+              print enabledVals
 
               --print usedRoles
               return ()]
@@ -81,7 +88,7 @@ gui
                                     ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- minSpinners]
                                     ,[label "-" | a <- roleList]
                                     ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- maxSpinners]
-                                    ,[widget cbox | cbox <- fillBoxes]
+                                    --,[widget cbox | cbox <- fillBoxes]
                                     ]
 
        -- Simulation page
@@ -107,8 +114,8 @@ getSpinValues i
        return maxvals
 
 getCheckValues i
-  = do checkedNums <- forM (zip i [1..]) (\a -> do
-        t <- get (fst a) checked
+  = do checkedNums <- forM i (\a -> do
+        t <- get a checked
         return t)
        return checkedNums
 
