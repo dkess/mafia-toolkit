@@ -70,9 +70,9 @@ gui
               maxPlayers <- get sMaxPlayers selection
 
               print $ [i ++ maybe [] (\y -> replicate (maxPlayers - mafiaNum - length i) (fst y))
-                         (listToMaybe [x | x <- zip roleList minVal, (MafiaRole.color (fst x)) == Green])
+                         (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
+                                         , (MafiaRole.color (fst x)) == Green])
                       | i <- minMaxList $ zip3 roleList minVal maxVal]
-
 
               --print usedRoles
               return ()]
