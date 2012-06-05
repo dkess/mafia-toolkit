@@ -68,7 +68,7 @@ gui
               mafiaNum <- get sMafiaNum selection
               maxPlayers <- get sMaxPlayers selection
 
-              print $ [i ++ (maybe [] (\y -> replicate (maxPlayers - mafiaNum - length i) (fst y))
+              print $ [i ++ (maybe [] (\y -> replicate (maxPlayers - mafiaNum - length [z | z <- i, MafiaRole.color z /= Red]) (fst y))
                          (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
                                          , (MafiaRole.color (fst x)) == Green]))
                          ++ (maybe [] (\y -> replicate (mafiaNum - length [x | x <- i, MafiaRole.color x == Red]) (fst y))
@@ -76,10 +76,6 @@ gui
                                          , (MafiaRole.color (fst x)) == Red]))
                          | i <- minMaxList $ listFromBools (zip3 roleList minVal maxVal) usedRoles]
 
-              --print $ minMaxList $ listFromBools (zip3 roleList minVal maxVal) enabledVals
-              --print enabledVals
-
-              --print usedRoles
               return ()]
 
        let roleSettings = transpose [[widget cbox | cbox <- checkBoxes]

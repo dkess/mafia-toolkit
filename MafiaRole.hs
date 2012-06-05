@@ -51,7 +51,8 @@ data Role = Role {
 }
 
 instance Show Role where
-    show role = name role ++ "(" ++ show (health role) ++ ")"
+    --show role = name role ++ "(" ++ show (health role) ++ ")"
+    show role = [head $ name role]
 
 defaultRole :: Role     -- The default role
 defaultRole = Role {
@@ -105,7 +106,7 @@ roleCop = defaultRole {
 
 aCop :: Role    -- Alignment cop
 aCop = defaultRole {
-    name = " Cop",
+    name = "Cop",
     color = Green,
     defRole = True
     -- action should take sanity as parameter
