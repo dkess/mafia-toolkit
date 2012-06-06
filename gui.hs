@@ -72,29 +72,32 @@ gui
                                             spinner <- spinCtrl p1 0 99 [selection := 0]
                                             return spinner)
 
-       refButton <- button p [text := "Print Output", on command :=
-          do
-              fillVals <- getCheckValues fillBoxes
-              enabledVals <- getCheckValues checkBoxes
+       let getRolePossibilities = do
+           fillVals <- getCheckValues fillBoxes
+           enabledVals <- getCheckValues checkBoxes
 
-              let usedRoles = zipWith (&&) (map not fillVals) enabledVals
+           let usedRoles = zipWith (&&) (map not fillVals) enabledVals
+ 
+           minVal <- getSpinValues minSpinners
+           maxVal <- getSpinValues maxSpinners
+           mafiaNum <- get sMafiaNum selection
+           maxPlayers <- get sMaxPlayers selection
+           deadPlayers <- getSpinValues deadSpinners
 
-              minVal <- getSpinValues minSpinners
-              maxVal <- getSpinValues maxSpinners
-              mafiaNum <- get sMafiaNum selection
-              maxPlayers <- get sMaxPlayers selection
-              deadPlayers <- getSpinValues deadSpinners
+           return $ [multiApply (concat [replicate (fst q) (megaDelete (snd q)) | q <- zip deadPlayers roleList])
+                    (i ++ (maybe [] (\y -> replicate (maxPlayers - mafiaNum - length [z | z <- i, MafiaRole.color z /= Red]) (fst y))
+                      (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
+                                      , (MafiaRole.color (fst x)) == Green]))
+                      ++ (maybe [] (\y -> replicate (mafiaNum - length [x | x <- i, MafiaRole.color x == Red]) (fst y))
+                      (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
+                                      , (MafiaRole.color (fst x)) == Red])))
+                      | i <- minMaxList $ listFromBools (zip3 roleList minVal maxVal) usedRoles]
 
-              print $ [multiApply (concat [replicate (fst q) (megaDelete (snd q)) | q <- zip deadPlayers roleList])
-                       (i ++ (maybe [] (\y -> replicate (maxPlayers - mafiaNum - length [z | z <- i, MafiaRole.color z /= Red]) (fst y))
-                         (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
-                                         , (MafiaRole.color (fst x)) == Green]))
-                         ++ (maybe [] (\y -> replicate (mafiaNum - length [x | x <- i, MafiaRole.color x == Red]) (fst y))
-                         (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
-                                         , (MafiaRole.color (fst x)) == Red])))
-                         | i <- minMaxList $ listFromBools (zip3 roleList minVal maxVal) usedRoles]
-
-              return ()]
+       refButton <- button p [text := "Print Output", on command := do
+           rolePossibilities <- getRolePossibilities
+           print rolePossibilities
+           return ()] 
+ 
 
        let roleSettings = transpose [[widget cbox | cbox <- checkBoxes]
                                     ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- minSpinners]
