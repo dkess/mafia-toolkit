@@ -17,7 +17,6 @@ data RoleFlags = RoleFlags {    -- RoleFlags are more dynamic than normal attrib
     bullets  :: Int,    -- bullets, for a vigilante 
     dtCheck  :: Role,   -- what this player returns as a dt check
     lives    :: Int,    -- lives carry over multiple nights
-    willAct  :: Bool,   -- if player has an optional action
     sanity   :: Sanities
 }
 
@@ -33,7 +32,6 @@ defaultFlags = RoleFlags {
         name = "NORMAL" -- detective should use real role
     },
     lives = 0,
-    willAct = False,
     sanity = Sane
 }
 
@@ -42,8 +40,9 @@ data Role = Role {
     health  :: Int,
     color   :: Color,
     action  :: [Role] -> [[Role]],
+    willAct :: Bool,
     startDay:: [Role -> Role],  -- actions done at the beginning
-    rflags  :: RoleFlags,
+    rflags  :: RoleFlags,       -- if player has an optional action
     maxAmount::Int,
     minAmount::Int,
     defRole :: Bool, -- Decides if the role should be enabled by default
@@ -65,6 +64,7 @@ defaultRole = Role {
     health = 1,
     color = None,
     action = noAction,
+    willAct = True,
     startDay = [],
     rflags = defaultFlags,
     maxAmount = 2,
@@ -73,14 +73,12 @@ defaultRole = Role {
     fillRole = False
 } where noAction x = [x]
 
-cVigilante :: Role
-cVigilante = defaultRole {
-    name = "Comp. Vigilante",
+vigilante :: Role
+vigilante = defaultRole {
+    name = "Vigilante",
     color = Green,
     action = modHP (-1),
-    rflags = defaultFlags {
-        willAct = True
-    },
+    willAct = False,
     maxAmount = 1
 }
 
@@ -172,7 +170,16 @@ roleblocker :: Role
 roleblocker = defaultRole {
     name = "Roleblocker",
     color = Red,
-    maxAmount = 1
+    maxAmount = 1,
+    action = listDist (\a -> a {willAct = False})
+}
+
+serialKiller :: Role
+serialKiller = defaultRole {
+    name = "Serial Killer",
+    color = Black,
+    maxAmount = 1,
+    action = modHP (-1)
 }
 
 -- Change health (s in sMod stands for single,
@@ -193,25 +200,17 @@ listDist f r = [b ++ f m:e | (b,m:e) <- select r]
 
 -- If willAct in the flags is set to False, do not give an action.
 -- Otherwise perform the action
-maybeAct :: RoleFlags -> ([Role] -> [[Role]]) -> [Role] -> [[Role]]
-maybeAct flags f r = if (willAct flags) then
+maybeAct :: Role -> ([Role] -> [[Role]]) -> [Role] -> [[Role]]
+maybeAct q f r = if (willAct q) then
     f r
 else
     [r]
-
-{-
--- Functions to generate lists based off the min/max values specified in the GUI
-minMaxList :: [(a,Int,Int)] -> [[a]]
-minMaxList i = filter notnull $ map quantityList $ concatMap  permutations $ transpose $ [take (wideLCM [t | t <- map length (map expandMinMax i), t /= 0]) (cycle a) | a <- map expandMinMax i]
--}
 
 minMaxList :: [(a,Int,Int)] -> [[a]]
 minMaxList i = 
   map quantityList $
   sequence $
-  --map concat $
-  --map permutations $
-  [take (wideLCM (map length ei)) (cycle a) | a <- ei]
+  [take (foldl lcm 1 (map length ei)) (cycle a) | a <- ei]
      where ei = [expandMinMax (a,b,c) | (a,b,c) <- i, c /= 0]
 
 expandMinMax :: (a,Int,Int) -> [(a,Int)]
@@ -220,10 +219,6 @@ expandMinMax (a,min,max) =  zip (repeat a) [min..max]
 testList :: [(Integer,Int,Int)]
 testList = [(1,3,4),(2,1,3),(3,3,5)]
 
--- yfeldblum on StackOverflow for this one
-wideLCM :: [Int] -> Int
-wideLCM = foldl lcm 1
-
 quantityList :: [(a,Int)] -> [a]
 quantityList [] = []
 quantityList ((a,num):xs)
@@ -231,7 +226,7 @@ quantityList ((a,num):xs)
   | otherwise= (replicate num a) ++ (quantityList xs)
 
 roleList :: [Role]
-roleList = [vanilla,cVigilante,doctor,roleCop,aCop,detective,veteran,watcher,tracker,goon,godfather,roleblocker]
+roleList = [vanilla,vigilante,doctor,roleCop,aCop,detective,veteran,watcher,tracker,godfather,goon,roleblocker,serialKiller]
 
 -- for testing purposes
 testRoles :: [Role]
