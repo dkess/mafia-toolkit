@@ -64,7 +64,7 @@ gui
                                            return spinner)
 
        fillBoxes <- forM roleList(\a -> do
-                                       cbox <- checkBox p1 [text := "Fill"]
+                                       cbox <- checkBox p1 []
                                        set cbox [checked := fillRole a]
                                        return cbox)
        
@@ -99,12 +99,12 @@ gui
            return ()] 
  
 
-       let roleSettings = transpose [[widget cbox | cbox <- checkBoxes]
-                                    ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- minSpinners]
-                                    ,[label "-" | a <- roleList]
-                                    ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- maxSpinners]
-                                    ,[widget cbox | cbox <- fillBoxes]
-                                    ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- deadSpinners]
+       let roleSettings = transpose [label "Role Name" : [widget cbox | cbox <- checkBoxes]
+                                    ,label "Min" : [minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- minSpinners]
+                                    ,glue : [label "-" | a <- roleList]
+                                    ,label "Max" : [minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- maxSpinners]
+                                    ,label "Fill?" : [widget cbox | cbox <- fillBoxes]
+                                    ,label "# Dead" : [minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- deadSpinners]
                                     ]
 
        -- Simulation page
