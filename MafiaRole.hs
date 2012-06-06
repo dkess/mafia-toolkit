@@ -71,7 +71,7 @@ defaultRole = Role {
     minAmount = 0,
     defRole = False,
     fillRole = False
-} where noAction x = [[]]
+} where noAction x = [x]
 
 cVigilante :: Role
 cVigilante = defaultRole {
@@ -123,12 +123,49 @@ detective = defaultRole {
     color = Green
 }
 
+veteran :: Role
+veteran = defaultRole {
+    name = "Veteran",
+    color = Green,
+    rflags = defaultFlags {
+        lives = 1
+    }
+}
+
+watcher :: Role
+watcher = defaultRole {
+    name = "Watcher",
+    color = Green
+}
+
+tracker :: Role
+tracker = defaultRole {
+    name = "Tracker",
+    color = Green
+}
+
 goon :: Role
 goon = defaultRole {
     name = "Goon",
     color = Red,
     defRole = True,
-    fillRole = True
+    fillRole = True,
+    maxAmount = 0
+}
+
+godfather :: Role
+godfather = defaultRole {
+    name = "Godfather",
+    color = Red,
+    defRole = True,
+    rflags = defaultFlags {
+        dtCheck = defaultRole {
+            name = "FakeGF",
+            color = Green
+        }
+    },
+    minAmount = 1,
+    maxAmount = 1
 }
 
 roleblocker :: Role
@@ -194,7 +231,7 @@ quantityList ((a,num):xs)
   | otherwise= (replicate num a) ++ (quantityList xs)
 
 roleList :: [Role]
-roleList = [vanilla,cVigilante,doctor,roleCop,aCop,detective,goon,roleblocker]
+roleList = [vanilla,cVigilante,doctor,roleCop,aCop,detective,veteran,watcher,tracker,goon,godfather,roleblocker]
 
 -- for testing purposes
 testRoles :: [Role]
