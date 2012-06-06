@@ -50,6 +50,11 @@ data Role = Role {
     fillRole:: Bool
 }
 
+--instance (Eq m) => Eq (Role m) where
+instance Eq Role where
+    x == y = name x == name y
+    _ == _ = False
+
 instance Show Role where
     --show role = name role ++ "(" ++ show (health role) ++ ")"
     show role = [head $ name role]

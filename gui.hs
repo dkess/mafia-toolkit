@@ -19,6 +19,18 @@ spinnerW = 40
 listFromBools :: [a] -> [Bool] -> [a]
 listFromBools x y = [fst a | a <- zip x y, snd a == True]
 
+-- megaDelete returns an empty list if the item
+-- to be deleted does not exist
+megaDelete :: Eq a => a -> [a] -> [a]
+megaDelete x y
+ | length afterDel < length y = afterDel
+ | otherwise = []
+  where afterDel = delete x y
+
+multiApply :: [(a -> a)] -> a -> a
+multiApply (f:fs) x = multiApply fs (f x)
+multiApply _ x = x
+
 gui :: IO ()
 gui
   = do f <- frame [text := "Mafia Toolkit"]
@@ -55,6 +67,10 @@ gui
                                        cbox <- checkBox p1 [text := "Fill"]
                                        set cbox [checked := fillRole a]
                                        return cbox)
+       
+       deadSpinners <- forM roleList(\a -> do
+                                            spinner <- spinCtrl p1 0 99 [selection := 0]
+                                            return spinner)
 
        refButton <- button p [text := "Print Output", on command :=
           do
@@ -67,13 +83,15 @@ gui
               maxVal <- getSpinValues maxSpinners
               mafiaNum <- get sMafiaNum selection
               maxPlayers <- get sMaxPlayers selection
+              deadPlayers <- getSpinValues deadSpinners
 
-              print $ [i ++ (maybe [] (\y -> replicate (maxPlayers - mafiaNum - length [z | z <- i, MafiaRole.color z /= Red]) (fst y))
+              print $ [multiApply (concat [replicate (fst q) (megaDelete (snd q)) | q <- zip deadPlayers roleList])
+                       (i ++ (maybe [] (\y -> replicate (maxPlayers - mafiaNum - length [z | z <- i, MafiaRole.color z /= Red]) (fst y))
                          (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
                                          , (MafiaRole.color (fst x)) == Green]))
                          ++ (maybe [] (\y -> replicate (mafiaNum - length [x | x <- i, MafiaRole.color x == Red]) (fst y))
                          (listToMaybe [x | x <- listFromBools (zip roleList minVal) (zipWith (&&) fillVals enabledVals)
-                                         , (MafiaRole.color (fst x)) == Red]))
+                                         , (MafiaRole.color (fst x)) == Red])))
                          | i <- minMaxList $ listFromBools (zip3 roleList minVal maxVal) usedRoles]
 
               return ()]
@@ -83,6 +101,7 @@ gui
                                     ,[label "-" | a <- roleList]
                                     ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- maxSpinners]
                                     ,[widget cbox | cbox <- fillBoxes]
+                                    ,[minsize (defaultSize {sizeW = spinnerW}) (widget spinner) | spinner <- deadSpinners]
                                     ]
 
        -- Simulation page
