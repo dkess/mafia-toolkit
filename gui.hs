@@ -118,6 +118,12 @@ gui
        sDeadMafia       <- spinCtrl p3 0 99 []
        sTownChecks      <- spinCtrl p3 0 99 []
        sMafiaChecks     <- spinCtrl p3 0 99 []
+       -- TODO: maybe make this a list of sanities instead of hard-coding them?
+       probSane         <- staticText p3 [text := "00%"]
+       probInsane       <- staticText p3 [text := "00%"]
+       probNaive        <- staticText p3 [text := "00%"]
+       probParanoid     <- staticText p3 [text := "00%"]
+       updateProbs      <- button p3 [text := "Update"]
 
        set cUseOtherDead [on command := do
                              isChecked <- get cUseOtherDead checked
@@ -141,11 +147,16 @@ gui
                           ,tab "DT Simulator"   $ container p3 $ margin 10 $ column 5
                              [ widget cUseOtherDead
                              , grid 5 5
-                               [ [label "Dead Town" ,widget sDeadTown]
-                               , [label "Dead Mafia",widget sDeadMafia]
-                               , [label "Town Checks" , widget sTownChecks]
-                               , [label "Mafia Checks", widget sMafiaChecks]
+                               [ [label "Dead Town" ,            widget sDeadTown]
+                               , [label "Dead Mafia",            widget sDeadMafia]
+                               , [label "Town Checks" ,          widget sTownChecks]
+                               , [label "Mafia Checks",          widget sMafiaChecks]
+                               , [label "Sane Probability:",     widget probSane]
+                               , [label "Insane Probability:",   widget probInsane]
+                               , [label "Naive Probability:",    widget probNaive]
+                               , [label "Paranoid Probability:", widget probParanoid]
                                ]
+                             , widget updateProbs
                              ]
                           ]
                         ]
