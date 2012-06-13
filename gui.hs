@@ -123,6 +123,12 @@ gui
        probInsane       <- staticText p3 [text := "00%"]
        probNaive        <- staticText p3 [text := "00%"]
        probParanoid     <- staticText p3 [text := "00%"]
+       probNextTown     <- staticText p3 [text := "00%"]
+       probNextMafia    <- staticText p3 [text := "00%"]
+       townFramer       <- checkBox p3 [text := "T -> M framer"
+                                       ,tooltip := "Framer can make town look like mafia"]
+       mafiaFramer      <- checkBox p3 [text := "M -> T framer"
+                                       ,tooltip := "Framer can make mafia look like town"]
        updateProbs      <- button p3 [text := "Update"]
 
        set cUseOtherDead [on command := do
@@ -151,10 +157,13 @@ gui
                                , [label "Dead Mafia",            widget sDeadMafia]
                                , [label "Town Checks" ,          widget sTownChecks]
                                , [label "Mafia Checks",          widget sMafiaChecks]
+                               , [widget townFramer,             widget mafiaFramer]
                                , [label "Sane Probability:",     widget probSane]
                                , [label "Insane Probability:",   widget probInsane]
                                , [label "Naive Probability:",    widget probNaive]
                                , [label "Paranoid Probability:", widget probParanoid]
+                               , [label "Next check Town:",      widget probNextTown]
+                               , [label "Next check Mafia:",     widget probNextMafia]
                                ]
                              , widget updateProbs
                              ]
