@@ -116,8 +116,8 @@ gui
        
        sDeadTown        <- spinCtrl p3  0 99 []
        sDeadMafia       <- spinCtrl p3 0 99 []
-       sMafiaChecks     <- spinCtrl p3 0 99 []
        sTownChecks      <- spinCtrl p3 0 99 []
+       sMafiaChecks     <- spinCtrl p3 0 99 []
 
        set cUseOtherDead [on command := do
                              isChecked <- get cUseOtherDead checked
