@@ -119,17 +119,19 @@ gui
        sTownChecks      <- spinCtrl p3 0 99 []
        sMafiaChecks     <- spinCtrl p3 0 99 []
        -- TODO: maybe make this a list of sanities instead of hard-coding them?
-       probSane         <- staticText p3 [text := "00%"]
-       probInsane       <- staticText p3 [text := "00%"]
-       probNaive        <- staticText p3 [text := "00%"]
-       probParanoid     <- staticText p3 [text := "00%"]
-       probNextTown     <- staticText p3 [text := "00%"]
-       probNextMafia    <- staticText p3 [text := "00%"]
-       townFramer       <- checkBox p3 [text := "T -> M framer"
+       tProbSane         <- staticText p3 [text := "00%"]
+       tProbInsane       <- staticText p3 [text := "00%"]
+       tProbNaive        <- staticText p3 [text := "00%"]
+       tProbParanoid     <- staticText p3 [text := "00%"]
+       tProbNextTown     <- staticText p3 [text := "00%"]
+       tProbNextMafia    <- staticText p3 [text := "00%"]
+       cTownFramer       <- checkBox p3 [text := "T -> M framer"
                                        ,tooltip := "Framer can make town look like mafia"]
-       mafiaFramer      <- checkBox p3 [text := "M -> T framer"
+       cMafiaFramer      <- checkBox p3 [text := "M -> T framer"
                                        ,tooltip := "Framer can make mafia look like town"]
-       updateProbs      <- button p3 [text := "Update"]
+       bUpdateProbs      <- button p3 [text := "Update"]
+
+       let 
 
        set cUseOtherDead [on command := do
                              isChecked <- get cUseOtherDead checked
@@ -153,19 +155,19 @@ gui
                           ,tab "DT Simulator"   $ container p3 $ margin 10 $ column 5
                              [ widget cUseOtherDead
                              , grid 5 5
-                               [ [label "Dead Town" ,            widget sDeadTown]
-                               , [label "Dead Mafia",            widget sDeadMafia]
-                               , [label "Town Checks" ,          widget sTownChecks]
-                               , [label "Mafia Checks",          widget sMafiaChecks]
-                               , [widget townFramer,             widget mafiaFramer]
-                               , [label "Sane Probability:",     widget probSane]
-                               , [label "Insane Probability:",   widget probInsane]
-                               , [label "Naive Probability:",    widget probNaive]
-                               , [label "Paranoid Probability:", widget probParanoid]
-                               , [label "Next check Town:",      widget probNextTown]
-                               , [label "Next check Mafia:",     widget probNextMafia]
+                               [ [label "Dead Town" ,               widget sDeadTown]
+                               , [label "Dead Mafia",               widget sDeadMafia]
+                               , [label "Town Checks" ,             widget sTownChecks]
+                               , [label "Mafia Checks",             widget sMafiaChecks]
+                               , [widget cTownFramer,               widget cMafiaFramer]
+                               , [label "Sane Probability:",        widget tProbSane]
+                               , [label "Insane Probability:",      widget tProbInsane]
+                               , [label "Naive Probability:",       widget tProbNaive]
+                               , [label "Paranoid Probability:",    widget tProbParanoid]
+                               , [label "Next check Town:",         widget tProbNextTown]
+                               , [label "Next check Mafia:",        widget tProbNextMafia]
                                ]
-                             , widget updateProbs
+                             , widget bUpdateProbs
                              ]
                           ]
                         ]
