@@ -110,17 +110,46 @@ gui
        -- Simulation page
        p2 <- panel nb []
 
+       -- Detective simulator page
+       p3 <- panel nb []
+       cUseOtherDead    <- checkBox p3 [text := "Use dead players from Setup page"]
+       
+       sDeadTown        <- spinCtrl p3  0 99 []
+       sDeadMafia       <- spinCtrl p3 0 99 []
+       sMafiaChecks     <- spinCtrl p3 0 99 []
+       sTownChecks      <- spinCtrl p3 0 99 []
+
+       set cUseOtherDead [on command := do
+                             isChecked <- get cUseOtherDead checked
+                             set sDeadTown [enabled := not isChecked]
+                             set sDeadMafia [enabled := not isChecked]
+                             return ()]
+
+       -- layout
        set f [layout := container p $
                         margin 10 $
                         row 5 [boxed "Game Setup"
                         (grid 5 5 [[label "Mafia #",minsize (defaultSize {sizeW = spinnerW}) (widget sMafiaNum)]
                                   ,[label "Max Players",minsize (defaultSize {sizeW = spinnerW}) (widget sMaxPlayers)]
                                   ,[label "Mafia KP",minsize (defaultSize {sizeW = spinnerW}) (widget sMafiaKP)]
-                                  ,[widget cDayNight,minsize (defaultSize {sizeW = spinnerW}) (widget sCycle)]])
+                                  ,[widget cDayNight,minsize (defaultSize {sizeW = spinnerW}) (widget sCycle)]
+                                  ,[widget refButton, glue]])
                         ,row 5 [tabs nb
                           [tab "Role Setup" $ container p1 $ margin 10 $ row 5 [grid 5 5
                             roleSettings]
-                          ,tab "Simulation" $ container p2 $ margin 10 $ column 5 [label "page 2"]]]]]
+                          ,tab "Simulation"     $ container p2 $ margin 10 $ column 5 [label "page 2"]
+                          ,tab "DT Simulator"   $ container p3 $ margin 10 $ column 5
+                             [ widget cUseOtherDead
+                             , grid 5 5
+                               [ [label "Dead Town" ,widget sDeadTown]
+                               , [label "Dead Mafia",widget sDeadMafia]
+                               , [label "Town Checks" , widget sTownChecks]
+                               , [label "Mafia Checks", widget sMafiaChecks]
+                               ]
+                             ]
+                          ]
+                        ]
+                        ]]
        return ()
 
 getSpinValues i
