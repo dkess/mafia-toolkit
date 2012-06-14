@@ -192,13 +192,15 @@ gui
        -- layout
        set f [layout := container p $
                         margin 10 $
-                        row 5 [boxed "Game Setup"
+                        row 5 [
+                        column 5
+                        [ boxed "Game Setup"
                         (grid 5 5 [[label "Mafia #",minsize (defaultSize {sizeW = spinnerW}) (widget sMafiaNum)]
                                   ,[label "Max Players",minsize (defaultSize {sizeW = spinnerW}) (widget sMaxPlayers)]
                                   ,[label "Mafia KP",minsize (defaultSize {sizeW = spinnerW}) (widget sMafiaKP)]
-                                  ,[widget cDayNight,minsize (defaultSize {sizeW = spinnerW}) (widget sCycle)]
-                                  ,[widget refButton, glue]])
-                        ,row 5 [tabs nb
+                                  ,[widget cDayNight,minsize (defaultSize {sizeW = spinnerW}) (widget sCycle)]])
+                        ,widget refButton]
+                        ,tabs nb
                           [tab "Roles" $ container p1 $ margin 10 $ row 5 [grid 5 5
                             roleSettings]
                           ,tab "Simulation"     $ container p2 $ margin 10 $ column 5 [label "page 2"]
@@ -227,7 +229,6 @@ gui
                              , widget mislynchesText
                              ]
                           ]
-                        ]
                         ]]
        return ()
 
