@@ -5,6 +5,7 @@ import Control.Monad
 import Data.List
 import Data.Maybe
 import MafiaRole
+import MafiaCalc
 import Data.List (transpose)
 import Data.Ratio
 
@@ -188,6 +189,24 @@ gui
        sRemainingTown <- spinCtrl p4 0 99 []
        sRemainingMafia <- spinCtrl p4 0 99 []
        mislynchesText <- staticText p4 []
+
+       let updateMLText = do
+           remainingTown <- get sRemainingTown selection
+           remainingMafia <- get sRemainingMafia selection
+           mafiaKP <- get sMafiaKP selection
+           dayNight <- get cDayNight selection
+           let boolDayNight = if dayNight < 1 then True else False
+           set mislynchesText [text :=
+               "Town loses in " ++
+               show (mislynchCycles remainingTown remainingMafia mafiaKP boolDayNight) ++
+               " cycles with " ++
+               show (mislynches remainingTown remainingMafia mafiaKP boolDayNight) ++
+               " mislynches."]
+           return ()
+       set sRemainingTown [on select := updateMLText]
+       set sRemainingMafia [on select := updateMLText]
+       set sMafiaKP [on select := updateMLText]
+       set cDayNight [on select := updateMLText]
 
        -- layout
        set f [layout := container p $
