@@ -196,7 +196,7 @@ gui
                           [tab "Role Setup" $ container p1 $ margin 10 $ row 5 [grid 5 5
                             roleSettings]
                           ,tab "Simulation"     $ container p2 $ margin 10 $ column 5 [label "page 2"]
-                          ,tab "DT Simulator"   $ container p3 $ margin 10 $ column 5
+                          ,tab "DT Calculator"   $ container p3 $ margin 10 $ column 5
                              [ widget cUseOtherDead
                              , grid 5 5
                                [ [label "Dead Town",                widget sDeadTown]
