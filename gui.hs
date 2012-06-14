@@ -174,14 +174,20 @@ gui
            set tProbNaive [text := (show $ fromRational $ toRational $ probNaive/allProbs*100) ++ "%"]
            set tProbParanoid [text := (show $ fromRational $ toRational $ probParanoid/allProbs*100) ++ "%"]
            return ()
-
+       
        set bUpdateProbs [on command := updateProbs]
        set cUseOtherDead [on command := do
                              isChecked <- get cUseOtherDead checked
                              set sDeadTown [enabled := not isChecked]
-                             updateProbs
                              set sDeadMafia [enabled := not isChecked]
+                             updateProbs
                              return ()]
+
+       -- Misc. Calculator page
+       p4 <- panel nb []
+       sRemainingTown <- spinCtrl p4 0 99 []
+       sRemainingMafia <- spinCtrl p4 0 99 []
+       mislynchesText <- staticText p4 []
 
        -- layout
        set f [layout := container p $
@@ -193,10 +199,10 @@ gui
                                   ,[widget cDayNight,minsize (defaultSize {sizeW = spinnerW}) (widget sCycle)]
                                   ,[widget refButton, glue]])
                         ,row 5 [tabs nb
-                          [tab "Role Setup" $ container p1 $ margin 10 $ row 5 [grid 5 5
+                          [tab "Roles" $ container p1 $ margin 10 $ row 5 [grid 5 5
                             roleSettings]
                           ,tab "Simulation"     $ container p2 $ margin 10 $ column 5 [label "page 2"]
-                          ,tab "DT Calculator"   $ container p3 $ margin 10 $ column 5
+                          ,tab "DT Calc"   $ container p3 $ margin 10 $ column 5
                              [ widget cUseOtherDead
                              , grid 5 5
                                [ [label "Dead Town",                widget sDeadTown]
@@ -212,6 +218,13 @@ gui
                                , [label "Next check Mafia:",        widget tProbNextMafia]
                                ]
                              , widget bUpdateProbs
+                             ]
+                          ,tab "Misc. Calc" $ container p4 $ margin 10 $ column 5
+                             [ grid 5 5
+                               [ [label "Remaining Town", widget sRemainingTown]
+                               , [label "Remaining Mafia", widget sRemainingMafia]
+                               ]
+                             , widget mislynchesText
                              ]
                           ]
                         ]
