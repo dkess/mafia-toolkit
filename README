@@ -1,3 +1,4 @@
 Allows you to make custom mafia setups, and calculates different possibilities and outputs probabilities.
+Also has probability/mislynch calculators
 
 Heavy WIP. The GUI is can generate a list of lists of roles, but there is no simulation functionality (yet)
