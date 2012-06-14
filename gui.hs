@@ -125,8 +125,6 @@ gui
        tProbInsane       <- staticText p3 [text := "00%"]
        tProbNaive        <- staticText p3 [text := "00%"]
        tProbParanoid     <- staticText p3 [text := "00%"]
-       tProbNextTown     <- staticText p3 [text := "00%"]
-       tProbNextMafia    <- staticText p3 [text := "00%"]
        cTownFramer       <- checkBox p3 [text := "T -> M framer"
                                        ,tooltip := "Framer can make town look like mafia"]
        cMafiaFramer      <- checkBox p3 [text := "M -> T framer"
@@ -239,8 +237,6 @@ gui
                                , [label "Insane Probability:",      widget tProbInsane]
                                , [label "Naive Probability:",       widget tProbNaive]
                                , [label "Paranoid Probability:",    widget tProbParanoid]
-                               , [label "Next check Town:",         widget tProbNextTown]
-                               , [label "Next check Mafia:",        widget tProbNextMafia]
                                ]
                              ]
                           ,tab "Misc. Calc" $ container p4 $ margin 10 $ column 5
