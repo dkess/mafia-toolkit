@@ -6,6 +6,7 @@ import Data.List
 import Data.Maybe
 import MafiaRole
 import Data.List (transpose)
+import Data.Ratio
 
 main :: IO ()
 main
@@ -131,11 +132,54 @@ gui
                                        ,tooltip := "Framer can make mafia look like town"]
        bUpdateProbs      <- button p3 [text := "Update"]
 
-       let 
+       let updateProbs = do
+           -- get all the values
+           mafiaNum <- get sMafiaNum selection
+           maxPlayers <- get sMaxPlayers selection
+           deadTown <- get sDeadTown selection
+           deadMafia <- get sDeadMafia selection
+           townChecks <- get sTownChecks selection
+           mafiaChecks <- get sMafiaChecks selection
+           townFramer <- get cTownFramer checked
+           mafiaFramer <- get cMafiaFramer checked
+           -- We use Data.Ratio for ratio calculations
+           -- The ratio is town % mafia
+           let saneRatio = (maxPlayers - mafiaNum - (if townFramer then 1 else 0) + (if mafiaFramer then 1 else 0) - deadTown)
+                         % (mafiaNum + (if townFramer then 1 else 0) - (if mafiaFramer then 1 else 0) - deadMafia)
+           let insaneRatio = (denominator saneRatio) % (numerator saneRatio)
+           let naiveRatio = 1 % 0   -- this raises an exception, must use a catch statment
+           let paranoidRatio = 0 % 1
+           
+           -- First we make sure that the number of checks don't exceed
+           -- the number of people of that alignment
+           let probSane = if (townChecks <= (maxPlayers - mafiaNum) || townFramer) && (mafiaChecks <= mafiaNum || mafiaFramer)
+                          then (((numerator saneRatio) % ((numerator saneRatio) + (denominator saneRatio)))^townChecks)
+                             * (((denominator saneRatio) % ((numerator saneRatio) + (denominator saneRatio)))^mafiaChecks)
+                          else 0 % 1
+           let probInsane = if (townChecks <= mafiaNum || townFramer) && (mafiaChecks <= (maxPlayers - mafiaNum) || mafiaFramer)
+                            then (((numerator insaneRatio) % ((numerator insaneRatio) + (denominator insaneRatio)))^townChecks)
+                               * (((denominator insaneRatio) % ((numerator insaneRatio) + (denominator insaneRatio)))^mafiaChecks)
+                            else 0 % 1
+           let probNaive = if mafiaChecks > 0
+                           then 0 % 1
+                           else 1 % 1
+           let probParanoid = if townChecks > 0
+                              then 0 % 1
+                              else 1 % 1
+           let allProbs = probSane + probInsane + probNaive + probParanoid
 
+           -- Now we actually set the label's values
+           set tProbSane [text := (show $ fromRational $ toRational $ probSane/allProbs*100) ++ "%"]
+           set tProbInsane [text := (show $ fromRational $ toRational $ probInsane/allProbs*100) ++ "%"]
+           set tProbNaive [text := (show $ fromRational $ toRational $ probNaive/allProbs*100) ++ "%"]
+           set tProbParanoid [text := (show $ fromRational $ toRational $ probParanoid/allProbs*100) ++ "%"]
+           return ()
+
+       set bUpdateProbs [on command := updateProbs]
        set cUseOtherDead [on command := do
                              isChecked <- get cUseOtherDead checked
                              set sDeadTown [enabled := not isChecked]
+                             updateProbs
                              set sDeadMafia [enabled := not isChecked]
                              return ()]
 
@@ -155,7 +199,7 @@ gui
                           ,tab "DT Simulator"   $ container p3 $ margin 10 $ column 5
                              [ widget cUseOtherDead
                              , grid 5 5
-                               [ [label "Dead Town" ,               widget sDeadTown]
+                               [ [label "Dead Town",                widget sDeadTown]
                                , [label "Dead Mafia",               widget sDeadMafia]
                                , [label "Town Checks" ,             widget sTownChecks]
                                , [label "Mafia Checks",             widget sMafiaChecks]
