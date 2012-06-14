@@ -147,8 +147,6 @@ gui
            let saneRatio = (maxPlayers - mafiaNum - (if townFramer then 1 else 0) + (if mafiaFramer then 1 else 0) - deadTown)
                          % (mafiaNum + (if townFramer then 1 else 0) - (if mafiaFramer then 1 else 0) - deadMafia)
            let insaneRatio = recip saneRatio
-           let naiveRatio = 1 % 0   -- this raises an exception, must use a catch statment
-           let paranoidRatio = 0 % 1
            
            -- First we make sure that the number of checks don't exceed
            -- the number of people of that alignment
