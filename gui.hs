@@ -131,7 +131,6 @@ gui
                                        ,tooltip := "Framer can make town look like mafia"]
        cMafiaFramer      <- checkBox p3 [text := "M -> T framer"
                                        ,tooltip := "Framer can make mafia look like town"]
-       bUpdateProbs      <- button p3 [text := "Update"]
 
        let updateProbs = do
            -- get all the values
@@ -182,7 +181,6 @@ gui
        set sMafiaChecks [on select := updateProbs]
        set cTownFramer [on command := updateProbs]
        set cMafiaFramer [on command := updateProbs]
-       set bUpdateProbs [on command := updateProbs]
        set sMafiaNum [on select := updateProbs]
        set sMaxPlayers [on select := updateProbs]
        set cUseOtherDead [on command := do
@@ -246,7 +244,6 @@ gui
                                , [label "Next check Town:",         widget tProbNextTown]
                                , [label "Next check Mafia:",        widget tProbNextMafia]
                                ]
-                             , widget bUpdateProbs
                              ]
                           ,tab "Misc. Calc" $ container p4 $ margin 10 $ column 5
                              [ grid 5 5
