@@ -146,7 +146,7 @@ gui
            -- The ratio is town % mafia
            let saneRatio = (maxPlayers - mafiaNum - (if townFramer then 1 else 0) + (if mafiaFramer then 1 else 0) - deadTown)
                          % (mafiaNum + (if townFramer then 1 else 0) - (if mafiaFramer then 1 else 0) - deadMafia)
-           let insaneRatio = (denominator saneRatio) % (numerator saneRatio)
+           let insaneRatio = recip saneRatio
            let naiveRatio = 1 % 0   -- this raises an exception, must use a catch statment
            let paranoidRatio = 0 % 1
            
