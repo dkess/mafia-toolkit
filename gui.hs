@@ -176,7 +176,15 @@ gui
            set tProbParanoid [text := (show $ fromRational $ toRational $ probParanoid/allProbs*100) ++ "%"]
            return ()
        
+       set sDeadTown [on select := updateProbs]
+       set sDeadMafia [on select := updateProbs]
+       set sTownChecks [on select := updateProbs]
+       set sMafiaChecks [on select := updateProbs]
+       set cTownFramer [on command := updateProbs]
+       set cMafiaFramer [on command := updateProbs]
        set bUpdateProbs [on command := updateProbs]
+       set sMafiaNum [on select := updateProbs]
+       set sMaxPlayers [on select := updateProbs]
        set cUseOtherDead [on command := do
                              isChecked <- get cUseOtherDead checked
                              set sDeadTown [enabled := not isChecked]
