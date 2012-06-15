@@ -129,6 +129,17 @@ gui
                                        ,tooltip := "Framer can make town look like mafia"]
        cMafiaFramer      <- checkBox p3 [text := "M -> T framer"
                                        ,tooltip := "Framer can make mafia look like town"]
+       cUnsureFramer     <- checkBox p3 [text := "Unsure of Framer's presence (50/50)"]
+
+       let updateUnsureFramer = do
+           townFramer <- get cTownFramer checked
+           mafiaFramer <- get cMafiaFramer checked
+           if (townFramer || mafiaFramer)
+               then set cUnsureFramer [enabled := True]
+               else set cUnsureFramer [enabled := False, checked := False]
+           return ()
+       
+       updateUnsureFramer
 
        let updateProbs = do
            -- get all the values
@@ -140,10 +151,16 @@ gui
            mafiaChecks <- get sMafiaChecks selection
            townFramer <- get cTownFramer checked
            mafiaFramer <- get cMafiaFramer checked
+           unsureFramer <- get cUnsureFramer checked
            -- We use Data.Ratio for ratio calculations
            -- The ratio is town % mafia
-           let saneRatio = (maxPlayers - mafiaNum - (if townFramer then 1 else 0) + (if mafiaFramer then 1 else 0) - deadTown)
-                         % (mafiaNum + (if townFramer then 1 else 0) - (if mafiaFramer then 1 else 0) - deadMafia)
+           let saneRatio = if unsureFramer
+                              then ((origNum * 2) + (if townFramer then 1 else 0) - (if mafiaFramer then 1 else 0))
+                                 % ((origDen * 2) - (if townFramer then 1 else 0) + (if mafiaFramer then 1 else 0))
+                              else origNum % origDen
+                 where origNum = (maxPlayers - mafiaNum - (if townFramer then 1 else 0) + (if mafiaFramer then 1 else 0) - deadTown)
+                       origDen = (mafiaNum + (if townFramer then 1 else 0) - (if mafiaFramer then 1 else 0) - deadMafia)
+            
            let insaneRatio = recip saneRatio
            
            -- First we make sure that the number of checks don't exceed
@@ -175,9 +192,14 @@ gui
        set sDeadMafia [on select := updateProbs]
        set sTownChecks [on select := updateProbs]
        set sMafiaChecks [on select := updateProbs]
-       set cTownFramer [on command := updateProbs]
-       set cMafiaFramer [on command := updateProbs]
+       set cTownFramer [on command := do updateProbs
+                                         updateUnsureFramer
+                                         return ()]
+       set cMafiaFramer [on command := do updateProbs
+                                          updateUnsureFramer
+                                          return ()]
        set sMafiaNum [on select := updateProbs]
+       set cUnsureFramer [on command := updateProbs]
        set sMaxPlayers [on select := updateProbs]
        set cUseOtherDead [on command := do
                              isChecked <- get cUseOtherDead checked
@@ -233,7 +255,10 @@ gui
                                , [label "Town Checks" ,             widget sTownChecks]
                                , [label "Mafia Checks",             widget sMafiaChecks]
                                , [widget cTownFramer,               widget cMafiaFramer]
-                               , [label "Sane Probability:",        widget tProbSane]
+                               ]
+                             , widget cUnsureFramer
+                             , grid 5 5
+                               [ [label "Sane Probability:",        widget tProbSane]
                                , [label "Insane Probability:",      widget tProbInsane]
                                , [label "Naive Probability:",       widget tProbNaive]
                                , [label "Paranoid Probability:",    widget tProbParanoid]
