@@ -2,6 +2,7 @@ module Main where
 
 import Graphics.UI.WX
 import Control.Monad
+import Control.Applicative
 import Data.List
 import Data.Maybe
 import MafiaRole
@@ -142,13 +143,13 @@ gui
        updateUnsureFramer
 
        let updateProbs = do
-           -- get all the values
-           mafiaNum <- get sMafiaNum selection
-           maxPlayers <- get sMaxPlayers selection
-           deadTown <- get sDeadTown selection
-           deadMafia <- get sDeadMafia selection
-           townChecks <- get sTownChecks selection
-           mafiaChecks <- get sMafiaChecks selection
+           -- get all the values. he have to use fromIntegral on all of them because Int isn't good enough for us
+           mafiaNum <- fromIntegral <$> get sMafiaNum selection
+           maxPlayers <- fromIntegral <$> get sMaxPlayers selection
+           deadTown <- fromIntegral <$> get sDeadTown selection
+           deadMafia <- fromIntegral <$> get sDeadMafia selection
+           townChecks <- fromIntegral <$> get sTownChecks selection
+           mafiaChecks <- fromIntegral <$> get sMafiaChecks selection
            townFramer <- get cTownFramer checked
            mafiaFramer <- get cMafiaFramer checked
            unsureFramer <- get cUnsureFramer checked
@@ -182,10 +183,10 @@ gui
            let allProbs = probSane + probInsane + probNaive + probParanoid
 
            -- Now we actually set the label's values
-           set tProbSane [text := (show $ fromRational $ toRational $ probSane/allProbs*100) ++ "%"]
-           set tProbInsane [text := (show $ fromRational $ toRational $ probInsane/allProbs*100) ++ "%"]
-           set tProbNaive [text := (show $ fromRational $ toRational $ probNaive/allProbs*100) ++ "%"]
-           set tProbParanoid [text := (show $ fromRational $ toRational $ probParanoid/allProbs*100) ++ "%"]
+           set tProbSane [text := (show $ fromRational $ probSane/allProbs*100) ++ "%"]
+           set tProbInsane [text := (show $ fromRational $ probInsane/allProbs*100) ++ "%"]
+           set tProbNaive [text := (show $ fromRational $ probNaive/allProbs*100) ++ "%"]
+           set tProbParanoid [text := (show $ fromRational $ probParanoid/allProbs*100) ++ "%"]
            return ()
        
        set sDeadTown [on select := updateProbs]
