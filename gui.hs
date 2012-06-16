@@ -13,18 +13,15 @@ main :: IO ()
 main
   = start gui
 
-spinnerW :: Int
-spinnerW = 40
-
 gui :: IO ()
 gui
   = do f <- frame [text := "Mafia Toolkit"]
        p <- panel f []
 
        -- The game setup widgets
-       sMafiaNum <- spinCtrl p 1 99 [selection := 2]
-       sMaxPlayers <- spinCtrl p 1 99 [selection := 7]
-       sMafiaKP <- spinCtrl p 0 99 [selection := 1
+       sMafiaNum <- spinCtrl p 1 99 [selection := 6]
+       sMaxPlayers <- spinCtrl p 1 99 [selection := 30]
+       sMafiaKP <- spinCtrl p 0 99 [selection := 0
                       ,tooltip := "Mafia KP-- 0 means ceil(maf#/2)"]
 
        defaultSize <- get sMafiaKP size
