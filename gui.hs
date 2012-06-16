@@ -5,7 +5,6 @@ import Control.Monad
 import Control.Applicative
 import Data.List
 import Data.Maybe
-import MafiaRole
 import MafiaCalc
 import Data.List (transpose)
 import Data.Ratio
