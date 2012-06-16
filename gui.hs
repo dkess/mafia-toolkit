@@ -37,8 +37,6 @@ gui
 
        -- Detective simulator page
        p1 <- panel nb []
-       cUseOtherDead    <- checkBox p1 [text := "Use dead players from Setup page"]
-       
        sDeadTown        <- spinCtrl p1  0 99 []
        sDeadMafia       <- spinCtrl p1 0 99 []
        sTownChecks      <- spinCtrl p1 0 99 []
@@ -124,12 +122,6 @@ gui
        set sMafiaNum [on select := updateProbs]
        set cUnsureFramer [on command := updateProbs]
        set sMaxPlayers [on select := updateProbs]
-       set cUseOtherDead [on command := do
-                             isChecked <- get cUseOtherDead checked
-                             set sDeadTown [enabled := not isChecked]
-                             set sDeadMafia [enabled := not isChecked]
-                             updateProbs
-                             return ()]
 
        -- Misc. Calculator page
        p2 <- panel nb []
@@ -168,8 +160,7 @@ gui
                         ]
                         ,tabs nb
                           [tab "DT Calc"   $ container p1 $ margin 10 $ column 5
-                             [ widget cUseOtherDead
-                             , grid 5 5
+                             [ grid 5 5
                                [ [label "Dead Town",                widget sDeadTown]
                                , [label "Dead Mafia",               widget sDeadMafia]
                                , [label "Town Checks" ,             widget sTownChecks]
